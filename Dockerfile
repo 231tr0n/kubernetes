@@ -1,13 +1,9 @@
-FROM golang:1.22-alpine
+FROM alpine:latest
 
 ENV PORT=":8080"
 
-WORKDIR /root/test
+WORKDIR /root/trial
 
-COPY go.mod main.go Makefile .
+COPY trial .
 
-RUN go mod tidy
-
-RUN GOEXPERIMENT=boringcrypto go build -v -o test .
-
-ENTRYPOINT ["./test"]
+ENTRYPOINT ["trial"]
