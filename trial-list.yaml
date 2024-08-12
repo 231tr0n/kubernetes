@@ -22,7 +22,7 @@ items:
         app: "trial-service"
       name: "trial-service"
     spec:
-      replicas: 4
+      replicas: 9
       selector:
         matchLabels:
           app: "trial-service"

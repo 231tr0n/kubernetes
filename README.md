@@ -31,6 +31,17 @@ minikube kubectl describe * # describe kinds
 minikube tunnel # exposes or tunnels services created with loadbalancer type
 minikube service [name] # exposes specified service via a url
 minikube dashboard # opens kubernetes dashboard
+minikube kubectl explain * # Shows docs for anything
+```
+### Add tls support for load balancer
+```bash
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365 -nodes
+kubectl -n kube-system create secret tls mkcert --key key.pem --cert cert.pem
+echo "kube-system/mkcert" | minikube addons configure ingress
+minikube addons configure ingress
+minikube addons disable ingress
+minikube addons enable ingress
+kubectl -n ingress-nginx get deployment ingress-nginx-controller -o yaml | grep "kube-system" # verify if kube-system/mkcert is found
 ```
 ## Load testing
 ```bash
