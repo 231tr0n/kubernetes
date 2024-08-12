@@ -5,7 +5,7 @@ docker-build:
 
 build:
 	go mod tidy
-	go build -o test .
+	GOEXPERIMENT=boringcrypto go build -o test .
 
 clean:
 	rm test

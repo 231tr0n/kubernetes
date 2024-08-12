@@ -8,6 +8,6 @@ COPY go.mod main.go Makefile .
 
 RUN go mod tidy
 
-RUN go build -v -o test .
+RUN GOEXPERIMENT=boringcrypto go build -v -o test .
 
 ENTRYPOINT ["./test"]

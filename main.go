@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	// "net/http/httputil"
+	_ "crypto/tls/fipsonly"
 	_ "net/http/pprof"
 	// "net/url"
 	"os"
