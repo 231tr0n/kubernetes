@@ -12,6 +12,7 @@ minikube image load trial:latest
 minikube kubectl apply -f trial-list.yaml
 minikube tunnel
 ```
+### If kubectl doesn't work with Minikube
 ```bash
 kubectl config current-context # prints minikube if installed
 kubectl config use-context minikube # sets context to minikube
