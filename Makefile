@@ -16,7 +16,7 @@ build:
 	GOEXPERIMENT=boringcrypto go build -v -o trial .
 
 rate-limit-test:
-	go run utils/rateLimit.go https://localhost:8080 1000 100
+	go run utils/rateLimit.go http://localhost:8080/test 1000 100
 
 run:
 	go mod tidy
