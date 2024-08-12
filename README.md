@@ -1,5 +1,4 @@
 # Kubernetes
-
 ## Installation
 Install docker, minikube and kubectl.
 
@@ -32,7 +31,6 @@ minikube tunnel # exposes or tunnels services created with loadbalancer type
 minikube service [name] # exposes specified service via a url
 minikube dashboard # opens kubernetes dashboard
 ```
-
 ## Load testing
 ```bash
 make rate-limit-test
