@@ -44,7 +44,6 @@ func init() {
 	if _, err := rand.Read(bytes); err != nil {
 		log.Fatalln("FATAL:", err)
 	}
-
 	id = base64.StdEncoding.EncodeToString(bytes)[:10]
 }
 
