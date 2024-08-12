@@ -1,0 +1,7 @@
+services:
+  trial:
+    image: trial:latest
+    container_name: trial-service
+    pull_policy: never
+    ports:
+      - "8080:8080"
