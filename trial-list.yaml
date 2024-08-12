@@ -22,7 +22,7 @@ items:
         app: "trial-service"
       name: "trial-service"
     spec:
-      replicas: 3
+      replicas: 4
       selector:
         matchLabels:
           app: "trial-service"
@@ -37,9 +37,11 @@ items:
               name: "trial-service"
               resources:
                 limits:
-                  cpu: 500m
+                  cpu: 1000m
+                  memory: "512Mi"
                 requests:
-                  cpu: 200m
+                  cpu: 1000m
+                  memory: "512Mi"
               ports:
                 - protocol: TCP
                   containerPort: 8080
