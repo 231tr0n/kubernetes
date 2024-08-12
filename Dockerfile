@@ -1,6 +1,6 @@
 FROM golang:1.22-alpine
 
-ENV PORT=8080
+ENV PORT=":8080"
 
 WORKDIR /root/test
 

@@ -117,6 +117,8 @@ func main() {
 			slog.Warn(err.Error())
 		}
 	}()
+	slog.Info("Started server", "port", port)
+
 	interrupt := make(chan os.Signal, 1)
 	defer close(interrupt)
 
@@ -136,5 +138,7 @@ func main() {
 
 	if err := server.Shutdown(ctx); err != nil {
 		slog.Error(err.Error())
+		os.Exit(1)
 	}
+	slog.Info("Shutdown server", "port", port)
 }
