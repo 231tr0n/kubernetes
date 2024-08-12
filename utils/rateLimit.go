@@ -19,6 +19,10 @@ func init() {
 	log.SetFlags(0)
 	log.SetPrefix("INFO: ")
 
+	if len(os.Args) != 4 {
+		log.Fatalln("Provide the right arguments in order: website-url, requests, threads")
+	}
+
 	url = os.Args[1]
 	var err error
 	requests, err = strconv.Atoi(os.Args[2])
@@ -67,6 +71,8 @@ func main() {
 	wg.Wait()
 
 	duration := int(time.Since(startTime).Round(time.Second).Seconds())
-	requestsPerSecond := int(requests / duration)
-	log.Printf("Load test completed in %ds with %d rps\n", duration, requestsPerSecond)
+	if duration > 0 {
+		requestsPerSecond := int(requests / duration)
+		log.Printf("Load test completed in %ds with %d rps\n", duration, requestsPerSecond)
+	}
 }
