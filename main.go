@@ -79,11 +79,13 @@ func main() {
 
 	// http.Handle("/ping/", httputil.NewSingleHostReverseProxy(pingServiceUrl))
 	// http.Handle("/pong/", httputil.NewSingleHostReverseProxy(pongServiceUrl))
+	http.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusAccepted)
+		fmt.Fprintf(w, "pong")
+	})
 	http.HandleFunc("GET /test", func(w http.ResponseWriter, r *http.Request) {
-		_, err := w.Write([]byte("Service working"))
-		if err != nil {
-			slog.Error(err.Error())
-		}
+		w.WriteHeader(http.StatusAccepted)
+		fmt.Fprintf(w, "Service working")
 	})
 	http.HandleFunc("POST /test/{value}", func(w http.ResponseWriter, r *http.Request) {
 		val := r.PathValue("value")
@@ -91,7 +93,7 @@ func main() {
 		fmt.Fprintf(w, "Service working: %s", val)
 	})
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, "Not Found", http.StatusNotFound)
+		http.NotFound(w, r)
 	})
 
 	server := http.Server{
@@ -102,7 +104,7 @@ func main() {
 			startTime := time.Now()
 			wr := &wrapperResponseWriter{
 				ResponseWriter: w,
-				statusCode:     http.StatusAccepted,
+				statusCode:     http.StatusBadRequest,
 			}
 			time.Sleep(time.Second)
 			http.DefaultServeMux.ServeHTTP(wr, r)
