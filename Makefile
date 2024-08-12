@@ -8,5 +8,9 @@ build:
 	go mod tidy
 	GOEXPERIMENT=boringcrypto go build -v -o test .
 
+run:
+	go mod tidy
+	GOEXPERIMENT=boringcrypto go run .
+
 clean:
 	rm test

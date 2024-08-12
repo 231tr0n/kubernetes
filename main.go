@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	// "net/http/httputil"
 	_ "crypto/tls/fipsonly"
 	_ "net/http/pprof"
+
 	// "net/url"
 	"os"
 	"os/signal"
@@ -20,6 +22,11 @@ import (
 type wrapperResponseWriter struct {
 	http.ResponseWriter
 	statusCode int
+}
+
+func (w *wrapperResponseWriter) WriteHeader(statusCode int) {
+	w.ResponseWriter.WriteHeader(statusCode)
+	w.statusCode = statusCode
 }
 
 var mu *sync.Mutex
@@ -80,12 +87,11 @@ func main() {
 	})
 	http.HandleFunc("POST /test/{value}", func(w http.ResponseWriter, r *http.Request) {
 		val := r.PathValue("value")
-		if val != "" {
-			_, err := w.Write([]byte("Service working: " + val))
-			if err != nil {
-				slog.Error(err.Error())
-			}
-		}
+		w.WriteHeader(http.StatusAccepted)
+		fmt.Fprintf(w, "Service working: %s", val)
+	})
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Not Found", http.StatusNotFound)
 	})
 
 	server := http.Server{
@@ -101,11 +107,11 @@ func main() {
 			time.Sleep(time.Second)
 			http.DefaultServeMux.ServeHTTP(wr, r)
 			if wr.statusCode > 399 {
-				slog.Warn("REQUEST", "method", r.Method, "ip", r.RemoteAddr, "path", r.URL.Path, "time", time.Since(startTime), "status", wr.statusCode)
+				slog.Warn("REQUEST", "method", r.Method, "ip", r.RemoteAddr, "time", time.Since(startTime).Round(time.Second), "status", wr.statusCode, "path", r.URL.Path)
 				mu.Unlock()
 				return
 			}
-			slog.Info("REQUEST", "method", r.Method, "ip", r.RemoteAddr, "path", r.URL.Path, "time", time.Since(startTime).Round(time.Second), "status", wr.statusCode)
+			slog.Info("REQUEST", "method", r.Method, "ip", r.RemoteAddr, "time", time.Since(startTime).Round(time.Second), "status", wr.statusCode, "path", r.URL.Path)
 			mu.Unlock()
 		}),
 	}
