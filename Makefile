@@ -17,7 +17,7 @@ build:
 
 run:
 	go mod tidy
-	GOEXPERIMENT=boringcrypto go run .
+	PORT=:8080 GOEXPERIMENT=boringcrypto go run .
 
 clean:
 	rm -rf ./trial
