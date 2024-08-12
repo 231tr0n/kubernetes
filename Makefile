@@ -6,6 +6,10 @@ docker-build:
 	docker rmi -f trial
 	docker build -t trial .
 
+docker-run:
+	$(MAKE) docker-build
+	docker run --rm -p 8080:8080 trial
+
 build:
 	$(MAKE) clean
 	go mod tidy

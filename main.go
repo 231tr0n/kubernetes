@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"log/slog"
@@ -9,6 +10,7 @@ import (
 	"sync"
 
 	// "net/http/httputil"
+	"crypto/rand"
 	_ "crypto/tls/fipsonly"
 	_ "net/http/pprof"
 
@@ -30,15 +32,23 @@ func (w *wrapperResponseWriter) WriteHeader(statusCode int) {
 }
 
 var mu *sync.Mutex
+var id string
 
 func init() {
-	mu = &sync.Mutex{}
-}
-
-func main() {
 	log.SetPrefix("")
 	log.SetFlags(0)
 
+	mu = &sync.Mutex{}
+
+	bytes := make([]byte, 10)
+	if _, err := rand.Read(bytes); err != nil {
+		log.Fatalln("FATAL:", err)
+	}
+
+	id = base64.StdEncoding.EncodeToString(bytes)[:10]
+}
+
+func main() {
 	defer func() {
 		if err := recover(); err != nil {
 			err, ok := err.(error)
@@ -85,7 +95,7 @@ func main() {
 	})
 	http.HandleFunc("GET /test", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusAccepted)
-		fmt.Fprintf(w, "Service working")
+		fmt.Fprintf(w, "Service working: %s", id)
 	})
 	http.HandleFunc("POST /test/{value}", func(w http.ResponseWriter, r *http.Request) {
 		val := r.PathValue("value")
