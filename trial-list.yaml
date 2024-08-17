@@ -1,47 +1,48 @@
+---
 apiVersion: "v1"
 kind: "List"
 items:
-  - apiVersion: "v1"
-    kind: "Service"
-    metadata:
-      name: "trial-service"
-    spec:
-      selector:
+- apiVersion: "v1"
+  kind: "Service"
+  metadata:
+    name: "trial-service"
+  spec:
+    selector:
+      app: "trial-service"
+    type: LoadBalancer
+    ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 32000
+      protocol: TCP
+- apiVersion: "apps/v1"
+  kind: "Deployment"
+  metadata:
+    labels:
+      app: "trial-service"
+    name: "trial-service"
+  spec:
+    replicas: 9
+    selector:
+      matchLabels:
         app: "trial-service"
-      type: LoadBalancer
-      ports:
-        - name: http
-          port: 8080
-          targetPort: 8080
-          nodePort: 32000
-          protocol: TCP
-  - apiVersion: "apps/v1"
-    kind: "Deployment"
-    metadata:
-      labels:
-        app: "trial-service"
-      name: "trial-service"
-    spec:
-      replicas: 9
-      selector:
-        matchLabels:
+    template:
+      metadata:
+        labels:
           app: "trial-service"
-      template:
-        metadata:
-          labels:
-            app: "trial-service"
-        spec:
-          containers:
-            - image: "trial:latest"
-              imagePullPolicy: "Never"
-              name: "trial-service"
-              resources:
-                limits:
-                  cpu: 1000m
-                  memory: "512Mi"
-                requests:
-                  cpu: 1000m
-                  memory: "512Mi"
-              ports:
-                - protocol: TCP
-                  containerPort: 8080
+      spec:
+        containers:
+        - image: "trial:latest"
+          imagePullPolicy: "Never"
+          name: "trial-service"
+          resources:
+            limits:
+              cpu: 1000m
+              memory: "512Mi"
+            requests:
+              cpu: 1000m
+              memory: "512Mi"
+          ports:
+          - protocol: TCP
+            containerPort: 8080
