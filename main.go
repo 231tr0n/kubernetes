@@ -134,7 +134,7 @@ func main() {
 			slog.Warn(err.Error())
 		}
 	}()
-	slog.Info("Started server", "port", port)
+	slog.Info("Started server on", "port", port)
 
 	interrupt := make(chan os.Signal, 1)
 	defer close(interrupt)
@@ -145,10 +145,12 @@ func main() {
 
 	val, ok := <-interrupt
 	if !ok {
+		log.Println()
 		slog.Warn("Channel closed before receiving os signal")
+	} else {
+		log.Println()
+		slog.Warn(val.String() + " received")
 	}
-	log.Println()
-	slog.Warn(val.String() + " received")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -157,5 +159,5 @@ func main() {
 		slog.Error(err.Error())
 		os.Exit(1)
 	}
-	slog.Info("Shutdown server", "port", port)
+	slog.Info("Shutdown server on", "port", port)
 }
